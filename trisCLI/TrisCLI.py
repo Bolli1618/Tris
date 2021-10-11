@@ -5,9 +5,9 @@
 #  \_/   \_/\_\ \_/ \____/ 
 
 # autore: Filippo Bollito
-# versione: 2.9
-# novità: miglioramento modalità difficile
-# data: 29/9/2021
+# versione: 2.10
+# novità:  miglioramento modalità difficile
+# data: 11/10/2021
 
 import sys, os, time, random
 
@@ -56,6 +56,7 @@ class TrisGame:
                 raise StopAsyncIteration()
             elif again == 'n':
                 self.menu()
+                self.run()
             else:
                 self.run()
         else:
@@ -199,14 +200,15 @@ class TrisGame:
                 
                 cls()
                 TrisGame().Print()
-                TrisGame().test()  
+                TrisGame().test()
 
                 if TrisRequirements.victory == 'T':
                     break
                 else:
                     TrisRequirements.trn = TrisRequirements.trn + 1
-                    if TrisRequirements.trn == 9:
-                        print('Pareggio! Complimenti')               
+                    if TrisRequirements.trn == 10:
+                        print('Pareggio! Complimenti')
+                        break
 
         class LogicAdapters: #<- logica in base alla quale scegliere la mossa 
             
@@ -233,16 +235,14 @@ class TrisGame:
                     computerF_move = random.choice(TrisRequirements.grid_zone)
                     TrisRequirements.grid[computerF_move] = 'O'
                     TrisRequirements.grid_zone.remove(computerF_move)
-                    return True
+                    #return True
 
             class Medio: # <- Quando può fa tris, impedisce all'altro di farlo, altrimenti gioca casualmente
 
                 def response(self):
                     global computer_move
-                    error = random.randrange(1,10)
                     computer_move = random.choice(TrisRequirements.grid_zone)
-                    if error != 0:
-                        TrisGame.SinglePlayer.LogicAdapters.Intelligent()
+                    TrisGame.SinglePlayer.LogicAdapters.Intelligent()
                     TrisRequirements.grid[computer_move] = 'O'
                     TrisRequirements.grid_zone.remove(computer_move)
 
@@ -251,7 +251,6 @@ class TrisGame:
                 def response(self):
                     global computer_move
                     
-                    error = random.randrange(1,10)
                     computer_move = random.choice(TrisRequirements.grid_zone)
                     if TrisRequirements.starter == 'O':
                         if TrisRequirements.trn == 1:
@@ -270,6 +269,8 @@ class TrisGame:
                                         if TrisRequirements.grid[angle] == ' ':
                                             computer_move = angle
                                     TrisRequirements.case = 1
+                                elif TrisRequirements.grid[angle] == 'O' and TrisRequirements.grid["b2"] == "X" and TrisRequirements.grid[TrisRequirements.opposite_angles[angle]]:
+                                    computer_move = TrisRequirements.opposite_angles[angle]
                         elif TrisRequirements.trn == 5 and TrisRequirements.case == 1:
                             for angle in TrisRequirements.grid_angles:
                                 if TrisRequirements.grid[angle] == ' ':
@@ -291,10 +292,10 @@ class TrisGame:
                                             except ValueError:
                                                 pass
                                         computer_move = random.choice(intelligent_grid_zones)
-                    if error != 0:
-                        TrisGame.SinglePlayer.LogicAdapters.Intelligent()
+                    TrisGame.SinglePlayer.LogicAdapters.Intelligent()
                     TrisRequirements.grid[computer_move] = 'O'
                     TrisRequirements.grid_zone.remove(computer_move)
+                    TrisRequirements.t = "Il computer"
                     print(computer_move)
 
             class Impossibile: # <- gioca come FilippoBollito, ma senza errori di distrazione
